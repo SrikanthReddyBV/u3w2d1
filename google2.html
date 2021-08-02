@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google</title>
+
+    <style>
+      #navbar {
+        display: flex;
+        flex-direction: row;
+        max-height: 80px;
+        /* position: fixed; */
+        box-sizing: border-box;
+      }
+      #search input[type="text"] {
+        border: none;
+        line-height: 30px;
+        font-size: 25px;
+        padding: 15px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        border-radius: 20px;
+        margin-left: 25px;
+        width: 500px;
+      }
+
+      #search input[type="text"]:focus {
+        border: none;
+        outline: none;
+
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+      }
+
+      #search input[type="text"]:hover {
+        border: none;
+        outline: none;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+      }
+
+      #btn {
+        border: none;
+        outline: none;
+        height: 60px;
+        padding: 5px;
+        width: 100px;
+        border-radius: 20px;
+        /* background-color: white; */
+      }
+      #btn:hover {
+        cursor: pointer;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+      }
+      #cont {
+        display: flex;
+        flex-direction: row;
+        margin: 50px 100px;
+      }
+      #content {
+        margin-left: 5%;
+        padding: 10px;
+        max-width: 60%;
+        min-width: 60%;
+        /* border: black solid 2px; */
+      }
+      #knowledge {
+        padding: 10px;
+        max-width: 40%;
+        min-width: 40%;
+        /* border: red solid 2px; */
+      }
+      .search_results h3 > a {
+        text-decoration: none;
+      }
+      body {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="navbar">
+      <div>
+        <img
+          src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png"
+        />
+      </div>
+      <div id="search">
+        <input type="text" id="inp" />
+      </div>
+      <div>
+        <button id="btn" onclick="search()">Search</button>
+      </div>
+    </div>
+
+    <div id="cont">
+      <div id="content">
+        <!-- <div class="search_results">
+          <p>dsfghjkl</p>
+          <h3>
+            <a href="https://en.wikipedia.org/wiki/Hyderabad">Hyderabad</a>
+          </h3>
+          <p>cvfghjklfghjk</p>
+        </div> -->
+      </div>
+      <div id="knowledge"></div>
+    </div>
+  </body>
+</html>
+
+<script>
+  function search() {
+    let inp = document.getElementById("inp").value;
+
+    console.log("done");
+    fetch(
+      `http://api.serpstack.com/search?access_key=aca54e16f3a5194c7765b54c822520b8&query=${inp}`
+    )
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.log("here");
+        console.log(res);
+        console.log(res.organic_results);
+        res.organic_results.forEach((el) => {
+          let main_div = document.getElementById("content");
+          let div = document.createElement("div");
+          div.setAttribute("class", "search_results");
+          let p = el.displayed_url;
+          let h3 = el.title;
+          let url = el.url;
+          //   console.log(p, h3, url);
+          div.innerHTML = `<p>${p}</p><h3><a href="${url}">${h3}</a></h3><p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>`;
+          main_div.appendChild(div);
+        });
+      });
+  }
+</script>

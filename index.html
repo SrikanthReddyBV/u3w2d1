@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #forms {
+        display: flex;
+        align-items: center;
+      }
+
+      form {
+        width: 10%;
+      }
+
+      #forms div {
+        flex: 1;
+        padding-left: 20%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="forms">
+      <div id="register">
+        <form onsubmit="register(event)">
+          Name:<input type="text" id="inp1" /> Email:<input
+            type="email"
+            id="inp2"
+          />
+          Password:<input type="password" id="inp3" /> Username:<input
+            type="text"
+            id="inp4"
+          />
+          Mobile:<input type="number" id="inp5" /> Description:<input
+            type="text"
+            id="inp6"
+          />
+          <input type="submit" />
+        </form>
+      </div>
+
+      <div id="login">
+        <form onsubmit="login(event)">
+          Username:<input type="text" id="inp7" /> Password:<input
+            type="password"
+            id="inp8"
+          />
+          <input type="submit" />
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+
+<script>
+  //   class Stack {
+  //     constructor() {
+  //       this.stack = [];
+  //       this.length = 0;
+  //     }
+  //     insert(...b) {
+  //       b.forEach((el) => {
+  //         this.stack.push(el);
+  //         this.length++;
+  //       });
+  //     }
+
+  //     remove() {
+  //       this.stack.pop();
+  //       this.length--;
+  //     }
+  //   }
+  //   var x = new Stack();
+
+  //   x.insert("s", "r", "i", "k", "a", "n", "t", "h");
+  //   x.remove();
+
+  //   console.log(x);
+
+  function register(e) {
+    e.preventDefault();
+
+    let formdata = {
+      name: document.getElementById("inp1").value,
+      email: document.getElementById("inp2").value,
+      password: document.getElementById("inp3").value,
+      username: document.getElementById("inp4").value,
+      mobile: document.getElementById("inp5").value,
+      description: document.getElementById("inp6").value,
+    };
+
+    console.log(formdata);
+
+    formdata = JSON.stringify(formdata);
+    console.log(formdata);
+
+    fetch("https://masai-api-mocker.herokuapp.com/auth/register", {
+      method: "POST",
+      body: formdata,
+      // additional info
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function login(e) {
+    e.preventDefault();
+    let formdata = {
+      password: document.getElementById("inp8").value,
+      username: document.getElementById("inp7").value,
+    };
+    let body = JSON.stringify(formdata);
+    fetch("https://masai-api-mocker.herokuapp.com/auth/login", {
+      method: "POST",
+      body: body,
+      // additional info
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        let u = formdata.username;
+        let t = res.token;
+        if (t != null) {
+          window.location.href = "home.html";
+        } else {
+          alert("wrong credentials");
+        }
+
+        getmyProfile(u, t);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function getmyProfile(username, token) {
+    fetch(`https://masai-api-mocker.herokuapp.com/user/${username}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+</script>
